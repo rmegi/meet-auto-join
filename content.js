@@ -1,13 +1,11 @@
 function clickJoinButton() {
-  const joinBtn = document.querySelector('button[jsname="Qx7uuf"]'); // "Join now"
+  const joinBtn = document.querySelector('button[jsname="Qx7uuf"]');
   if (joinBtn) {
     joinBtn.click();
-    console.log("✅ Clicked Join Now");
+    console.log("✅ Clicked Join");
   } else {
-    console.log("⏳ Waiting for Join button...");
-    setTimeout(clickJoinButton, 1000); // Try again after 1 second
+    setTimeout(clickJoinButton, 1000);
   }
 }
 
-// Give the page some time to load
 setTimeout(clickJoinButton, 3000);
