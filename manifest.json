@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Google Meet Auto Joiner",
+  "version": "1.0",
+  "description": "Automatically joins Google Meet meetings at scheduled times.",
+  "permissions": ["tabs", "alarms", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "host_permissions": [
+    "https://meet.google.com/*"
+  ],
+  "action": {
+    "default_title": "Meet Auto Joiner"
+  }
+}
