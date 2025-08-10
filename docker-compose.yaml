@@ -1,6 +1,7 @@
 services:
   server:
     build:
+      context: ./server
       dockerfile: Dockerfile
     image: server
     command: ["python", "main.py"]
