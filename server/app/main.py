@@ -1,35 +1,29 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
-from typing import Optional
 import time
 
 app = FastAPI(title="Meet Code Bridge")
 
-# Allow local extension polling
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # tighten later if you like
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Simple in-memory "mailbox"
-MAILBOX = {"code": None, "ts": None}
+MAILBOX = {"code": None, "ts": None, "last": None}  # <-- add "last"
 
 
 class MeetCode(BaseModel):
     code: str
-    start_in_seconds: Optional[int] = 0
 
 
 @app.post("/send-code")
 def send_code(payload: MeetCode):
     code = payload.code.strip()
-    if not code:
-        return {"ok": False, "error": "Empty code"}
-
-    MAILBOX["code"] = code
+    MAILBOX["code"] = code  # “unread” code (consumed by /next-code)
+    MAILBOX["last"] = code  # last known code (served by /latest-code)
     MAILBOX["ts"] = int(time.time())
     return {"ok": True, "received": code}
 
@@ -37,17 +31,21 @@ def send_code(payload: MeetCode):
 @app.get("/next-code")
 def next_code():
     """
-    Polled by the Chrome extension every few seconds.
-    Returns the latest code once, then clears it.
+    Returns the unread code once (then clears it), plus last for reference.
     """
-    code = MAILBOX["code"]
-    ts = MAILBOX["ts"]
+    code, ts, last = MAILBOX["code"], MAILBOX["ts"], MAILBOX["last"]
     if not code:
-        return {"ok": True, "code": None, "ts": ts}
-
-    # Deliver once, then clear
+        return {"ok": True, "code": None, "last": last, "ts": ts}
     MAILBOX["code"] = None
-    return {"ok": True, "code": code, "ts": ts}
+    return {"ok": True, "code": code, "last": last, "ts": ts}
+
+
+@app.get("/latest-code")
+def latest_code():
+    """
+    Returns the most recent code WITHOUT clearing it.
+    """
+    return {"ok": True, "code": MAILBOX["last"], "ts": MAILBOX["ts"]}
 
 
 if __name__ == "__main__":
