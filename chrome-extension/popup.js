@@ -2,10 +2,10 @@ const API_BASE = "http://127.0.0.1:5005";
 
 document.addEventListener("DOMContentLoaded", () => {
   const joinBtn = document.getElementById("join");
+  const openIpBtn = document.getElementById("open-ip");
   const msgEl = document.getElementById("msg");
   const codeEl = document.getElementById("code");
 
-  // Small guards so we never crash if elements are missing
   const setMsg = (t) => {
     if (msgEl) msgEl.textContent = t;
   };
@@ -36,13 +36,25 @@ document.addEventListener("DOMContentLoaded", () => {
       : "https://meet.google.com/";
 
     setMsg("Opening meeting…");
-    // Use callback form (don’t await); avoids throwing into catch
     chrome.tabs.create({ url }, () => {
       if (chrome.runtime.lastError) {
         setMsg("Failed to open tab.");
         console.error("tabs.create error:", chrome.runtime.lastError);
       } else {
         setMsg("Tab opened.");
+      }
+    });
+  });
+
+  // New button handler
+  openIpBtn?.addEventListener("click", () => {
+    const targetUrl = "http://100.70.72.105:5173";
+    chrome.tabs.create({ url: targetUrl }, () => {
+      if (chrome.runtime.lastError) {
+        setMsg("Failed to open IP tab.");
+        console.error("tabs.create error:", chrome.runtime.lastError);
+      } else {
+        setMsg(`Opened: ${targetUrl}`);
       }
     });
   });
@@ -55,7 +67,6 @@ function formatCode(raw) {
     .toLowerCase();
   if (clean.length >= 10 && clean.length <= 12) {
     return `${clean.slice(0, 3)}-${clean.slice(3, 7)}-${clean.slice(7)}`;
-    // e.g. nizorepoxf => niz-orep-oxf
   }
-  return raw; // already dashed or short
+  return raw;
 }
