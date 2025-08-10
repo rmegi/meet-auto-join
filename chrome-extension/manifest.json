@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Google Meet Remote Joiner",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "permissions": ["tabs", "scripting"],
   "host_permissions": ["http://127.0.0.1:5005/*", "https://meet.google.com/*"],
   "background": { "service_worker": "background.js" },
@@ -14,6 +14,16 @@
   ],
   "action": {
     "default_title": "Join from server",
-    "default_popup": "popup.html"
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon.png",
+      "48": "icons/icon.png",
+      "128": "icons/icon.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
   }
 }
