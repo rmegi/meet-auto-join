@@ -1,0 +1,25 @@
+
+{
+  "manifest_version": 3,
+  "name": "Google Meet Remote Joiner",
+  "version": "1.0.0",
+  "description": "Opens & auto-joins Google Meet when a code is sent to your FastAPI server.",
+  "permissions": ["tabs", "scripting"],
+  "host_permissions": [
+    "http://localhost:5005/*",
+    "https://meet.google.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_title": "Meet Remote Joiner"
+  }
+}
